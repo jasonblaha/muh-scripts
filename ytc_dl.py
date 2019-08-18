@@ -3,10 +3,13 @@ import lxml.html
 import os
 import re
 import requests
+import sys
 import threading
 import time
 from tqdm import tqdm
 import urllib.parse
+
+from build_ytc_html import BuildCommentSectionHtml
 
 session = requests.Session()
 session.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36'
@@ -205,8 +208,11 @@ class FetchComments():
 		pbar.close()
 		print('')
 		
-		filepath = self.write_json_file(youtube_id)
-		print(f'Saved .json file as: {filepath}')
+		json_filepath = self.write_json_file(youtube_id)
+		print(f'Saved .json file as: "{json_filepath}"')
+		
+		html_filepath = BuildCommentSectionHtml(json_filepath)
+		print(f'Saved .html file as: "{html_filepath}"')
 		
 		self.comments_dict = comments_dict.copy()
 	
@@ -370,3 +376,16 @@ class FetchComments():
 			json.dump(comments_dict, f, indent=4)
 		
 		return filepath
+
+if __name__ == '__main__':
+	
+	cmd_args = sys.argv[1]
+	
+	fc_lst = []
+	
+	for youtube_url in cmd_args.split(','):
+		fc = FetchComments(youtube_url)
+		fc_lst.append(fc)
+		
+	
+	
