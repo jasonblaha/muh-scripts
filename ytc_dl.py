@@ -8,6 +8,7 @@ import threading
 import time
 from tqdm import tqdm
 import urllib.parse
+import webbrowser
 
 from build_ytc_html import BuildCommentSectionHtml
 
@@ -213,6 +214,7 @@ class FetchComments():
 		
 		html_filepath = BuildCommentSectionHtml(json_filepath)
 		print(f'Saved .html file as: "{html_filepath}"')
+		webbrowser.open(f'file:///{html_filepath}')
 		
 		self.comments_dict = comments_dict.copy()
 	
